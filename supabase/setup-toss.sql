@@ -628,13 +628,19 @@ begin
   select id into v_uid from auth.users where email = v_email;
   if v_uid is null then
     v_uid := gen_random_uuid();
+    -- 주의: GoTrue는 아래 token/change 문자열 컬럼이 NULL이면
+    -- "Database error querying schema"로 로그인에 실패한다 → 빈 문자열 필수.
     insert into auth.users (instance_id, id, aud, role, email, encrypted_password,
                             email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
-                            created_at, updated_at)
+                            created_at, updated_at,
+                            confirmation_token, recovery_token, email_change,
+                            email_change_token_new, email_change_token_current,
+                            phone_change, phone_change_token, reauthentication_token)
     values ('00000000-0000-0000-0000-000000000000', v_uid, 'authenticated', 'authenticated',
             v_email, extensions.crypt(v_password, extensions.gen_salt('bf')), now(),
             '{"provider":"email","providers":["email"]}'::jsonb,
-            '{"provider":"toss"}'::jsonb, now(), now());
+            '{"provider":"toss"}'::jsonb, now(), now(),
+            '', '', '', '', '', '', '', '');
     insert into auth.identities (id, user_id, provider_id, identity_data, provider,
                                  last_sign_in_at, created_at, updated_at)
     values (gen_random_uuid(), v_uid, v_uid::text,
@@ -647,3 +653,15 @@ begin
 end $$;
 
 grant execute on function toss_login(text) to anon, authenticated;
+
+-- 기존에 NULL 토큰 컬럼으로 만들어진 토스 계정 복구
+update auth.users set
+  confirmation_token = coalesce(confirmation_token, ''),
+  recovery_token = coalesce(recovery_token, ''),
+  email_change = coalesce(email_change, ''),
+  email_change_token_new = coalesce(email_change_token_new, ''),
+  email_change_token_current = coalesce(email_change_token_current, ''),
+  phone_change = coalesce(phone_change, ''),
+  phone_change_token = coalesce(phone_change_token, ''),
+  reauthentication_token = coalesce(reauthentication_token, '')
+where email like '%@toss.someday.land';
