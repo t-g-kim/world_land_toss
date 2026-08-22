@@ -1,0 +1,68 @@
+/* Goals / missions */
+.missions-summary {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 12px;
+}
+.missions-list { display: flex; flex-direction: column; gap: 8px; }
+
+.mission {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.mission.is-done { border-color: rgba(52, 211, 153, 0.5); background: rgba(52, 211, 153, 0.08); }
+.mission.is-claimed { opacity: 0.55; }
+
+.mission-icon { font-size: 22px; width: 30px; text-align: center; flex-shrink: 0; }
+.mission-body { flex: 1; min-width: 0; }
+.mission-title { font-weight: 700; font-size: 14px; }
+.mission-desc { font-size: 12px; color: var(--text-secondary); }
+
+.mission-bar {
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  margin-top: 6px;
+}
+.mission-bar > div { height: 100%; background: var(--accent, #4f46e5); border-radius: 3px; }
+.mission-prog { font-size: 10px; color: var(--text-secondary); margin-top: 3px; }
+
+.mission-action { flex-shrink: 0; text-align: center; }
+.mission-reward { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+.mission-check { font-size: 20px; color: #34d399; font-weight: 800; }
+.mission-claim {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #34d399;
+  color: #06281d;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  cursor: pointer;
+  animation: mission-pulse 1.4s ease-in-out infinite;
+}
+@keyframes mission-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+/* Red dot badge on the 🎯 top-bar button when a reward is ready */
+#btn-missions.has-badge { position: relative; }
+#btn-missions.has-badge::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.4);
+}

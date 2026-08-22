@@ -1,0 +1,194 @@
+/* Territory Info Panel */
+.panel {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  width: 340px;
+  height: calc(100% - 50px);
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 20;
+  transform: translateX(0);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.panel.hidden {
+  display: block !important;
+  transform: translateX(100%);
+  pointer-events: none;
+}
+
+.panel-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  z-index: 1;
+}
+
+.panel-close:hover {
+  color: var(--text-primary);
+}
+
+.panel-territory {
+  padding: 20px;
+}
+
+.panel-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.panel-level-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: #000;
+}
+
+.panel-iso {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.panel-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.panel-subtitle {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.panel-owner {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.panel-owner.unowned {
+  color: var(--accent);
+}
+
+/* Stats */
+.panel-stats {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.stat-row + .stat-row {
+  border-top: 1px solid var(--border);
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.stat-value {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.stat-value.price {
+  color: var(--accent);
+}
+
+.stat-value.income {
+  color: var(--income);
+}
+
+/* Actions */
+.panel-actions {
+  margin-bottom: 20px;
+}
+
+.panel-actions .btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+}
+
+.action-note {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* History */
+.panel-history h3 {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.history-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 12px;
+}
+
+.history-item + .history-item {
+  border-top: 1px solid var(--border);
+}
+
+.history-type {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.history-type.purchase { background: rgba(78, 205, 196, 0.15); color: var(--accent); }
+.history-type.sale { background: rgba(255, 107, 107, 0.15); color: var(--danger); }
+.history-type.income { background: rgba(130, 224, 170, 0.15); color: var(--income); }
+
+.history-price {
+  flex: 1;
+  text-align: right;
+  font-weight: 500;
+}
+
+.history-date {
+  color: var(--text-muted);
+}
+
+/* Price chart */
+#price-chart {
+  margin-bottom: 16px;
+}

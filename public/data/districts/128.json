@@ -1,0 +1,3 @@
+{"type":"FeatureCollection", "features": [
+{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[114.33955383300008,11.44330597000004],[114.33291626000005,11.442444801000022],[114.3375015260001,11.43791675500006],[114.33955383300008,11.44330597000004]]]},"properties":{"id":"DIS018","name":"Spratly Is","iso":"128","admin_level":"district"}}
+]}

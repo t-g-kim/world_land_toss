@@ -1,0 +1,29 @@
+{
+  "name": "someday",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && ait build",
+    "preview": "vite preview",
+    "deploy": "ait deploy",
+    "data:download": "bash data/scripts/download-boundaries.sh",
+    "data:simplify": "node data/scripts/simplify-geometries.js",
+    "data:seed": "node data/scripts/generate-territory-seeds.js"
+  },
+  "dependencies": {
+    "@apps-in-toss/web-framework": "^3.0.5",
+    "@supabase/supabase-js": "^2.39.0",
+    "chart.js": "^4.4.0",
+    "mapbox-gl": "^3.3.0"
+  },
+  "devDependencies": {
+    "@turf/area": "^7.0.0",
+    "@turf/bbox": "^7.0.0",
+    "@turf/simplify": "^7.0.0",
+    "mapshaper": "^0.6.113",
+    "shapefile": "^0.6.6",
+    "vite": "^5.4.0"
+  }
+}

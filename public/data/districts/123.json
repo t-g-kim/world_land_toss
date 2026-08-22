@@ -1,0 +1,3 @@
+{"type":"FeatureCollection", "features": [
+{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[131.86691859400003,37.24076077700005],[131.86476710600004,37.24287411900008],[131.8635464020001,37.240734073000056],[131.86691859400003,37.24076077700005]]]},"properties":{"id":"DIS013","name":"Liancourt Rocks","iso":"123","admin_level":"district"}}
+]}

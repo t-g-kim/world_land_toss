@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>someday — 전 세계 땅·건물 거래 게임</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Auth Overlay -->
+  <div id="auth-overlay" class="overlay hidden">
+    <div id="auth-container" class="auth-card">
+      <h1 class="auth-title">someday</h1>
+      <p class="auth-subtitle" data-i18n="app.subtitle">전 세계 영토를 사고 팔아 부를 쌓으세요</p>
+      <div id="auth-forms"></div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app">
+    <!-- Top Bar -->
+    <header id="top-bar">
+      <div class="top-bar-left">
+        <h1 class="logo">someday</h1>
+      </div>
+      <div class="top-bar-center">
+        <div id="user-balance" class="balance-display">
+          <span class="balance-icon">💰</span>
+          <span class="balance-value" id="balance-value">₩0</span>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <button id="btn-portfolio" class="top-btn" data-i18n-title="nav.portfolio" title="내 영토">🗺️</button>
+        <button id="btn-leaderboard" class="top-btn" data-i18n-title="nav.leaderboard" title="랭킹">🏆</button>
+        <button id="btn-dashboard" class="top-btn" data-i18n-title="nav.dashboard" title="대시보드">📊</button>
+        <button id="btn-missions" class="top-btn" data-i18n-title="nav.missions" title="목표">🎯</button>
+        <button id="btn-market" class="top-btn" data-i18n-title="nav.market" title="마켓">🏷️</button>
+        <button id="btn-earn" class="top-btn" data-i18n-title="nav.earn" title="돈벌기">💵</button>
+        <button id="btn-friends" class="top-btn" data-i18n-title="nav.friends" title="친구" data-count="">👥</button>
+        <button id="btn-notif" class="top-btn" data-i18n-title="nav.notif" title="알림" data-count="">🔔</button>
+        <button id="btn-account" class="top-btn" data-i18n-title="nav.account" title="계정">👤</button>
+      </div>
+    </header>
+
+    <!-- Map Container -->
+    <div id="map"></div>
+
+    <!-- Zoom Level Indicator -->
+    <div id="zoom-indicator" class="zoom-indicator">국가 보기</div>
+
+    <!-- Territory Info Panel (right side) -->
+    <aside id="territory-panel" class="panel hidden">
+      <button class="panel-close" id="panel-close">&times;</button>
+      <div id="panel-content"></div>
+    </aside>
+
+    <!-- Dashboard Sidebar -->
+    <aside id="dashboard-sidebar" class="sidebar hidden">
+      <div class="sidebar-header">
+        <h2 data-i18n="side.dashboard">대시보드</h2>
+        <button class="sidebar-close" data-close="dashboard-sidebar">&times;</button>
+      </div>
+      <div id="dashboard-content"></div>
+    </aside>
+
+    <!-- Portfolio Sidebar -->
+    <aside id="portfolio-sidebar" class="sidebar sidebar-left hidden">
+      <div class="sidebar-header">
+        <h2 data-i18n="side.portfolio">내 영토</h2>
+        <button class="sidebar-close" data-close="portfolio-sidebar">&times;</button>
+      </div>
+      <div id="portfolio-content"></div>
+    </aside>
+
+    <!-- Leaderboard Sidebar -->
+    <aside id="leaderboard-sidebar" class="sidebar hidden">
+      <div class="sidebar-header">
+        <h2 data-i18n="side.leaderboard">랭킹</h2>
+        <button class="sidebar-close" data-close="leaderboard-sidebar">&times;</button>
+      </div>
+      <div id="leaderboard-content"></div>
+    </aside>
+
+    <!-- Market Sidebar -->
+    <aside id="market-sidebar" class="sidebar hidden">
+      <div class="sidebar-header">
+        <h2 data-i18n="side.market">🏷️ 마켓</h2>
+        <button class="sidebar-close" data-close="market-sidebar">&times;</button>
+      </div>
+      <div id="market-content"></div>
+    </aside>
+
+    <!-- Missions Sidebar -->
+    <aside id="missions-sidebar" class="sidebar hidden">
+      <div class="sidebar-header">
+        <h2 data-i18n="side.missions">🎯 목표</h2>
+        <button class="sidebar-close" data-close="missions-sidebar">&times;</button>
+      </div>
+      <div id="missions-content"></div>
+    </aside>
+
+    <!-- Friends Sidebar -->
+    <aside id="friends-sidebar" class="sidebar sidebar-left hidden">
+      <div class="sidebar-header">
+        <h2 data-i18n="side.friends">👥 친구</h2>
+        <button class="sidebar-close" data-close="friends-sidebar">&times;</button>
+      </div>
+      <div id="friends-content"></div>
+    </aside>
+
+    <!-- Earn (rewarded ads) Sidebar -->
+    <aside id="earn-sidebar" class="sidebar sidebar-left hidden">
+      <div class="sidebar-header">
+        <h2 data-i18n="side.earn">💵 돈벌기</h2>
+        <button class="sidebar-close" data-close="earn-sidebar">&times;</button>
+      </div>
+      <div id="earn-content"></div>
+    </aside>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Modal -->
+    <div id="modal-overlay" class="overlay hidden">
+      <div id="modal-container" class="modal-card">
+        <div id="modal-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

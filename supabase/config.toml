@@ -1,0 +1,28 @@
+[project]
+id = "someday"
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+port = 54323
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000"]
+jwt_expiry = 3600
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
+# Google OAuth. Set the secrets in your environment (or supabase/.env) before
+# `supabase start`:
+#   SUPABASE_AUTH_GOOGLE_CLIENT_ID, SUPABASE_AUTH_GOOGLE_SECRET
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_GOOGLE_SECRET)"
+# Leave empty to use Supabase's default callback (/auth/v1/callback).
+redirect_uri = ""

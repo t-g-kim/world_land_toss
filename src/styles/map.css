@@ -1,0 +1,29 @@
+#map {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.mapboxgl-ctrl-top-right {
+  top: 60px;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  bottom: 10px;
+}
+
+.mapboxgl-popup-content {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  font-size: 13px;
+  box-shadow: var(--shadow);
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: var(--bg-card);
+}

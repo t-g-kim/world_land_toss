@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+.env.local
+data/raw/
+data/processed/
+*.log
+.DS_Store
+*.ait

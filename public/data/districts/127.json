@@ -1,0 +1,3 @@
+{"type":"FeatureCollection", "features": [
+{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[123.479858,25.750695],[123.458748,25.74375],[123.459031,25.735415],[123.4887460010001,25.73986],[123.479858,25.750695]]]},"properties":{"id":"DIS017","name":"Senkakus","iso":"127","admin_level":"district"}}
+]}
