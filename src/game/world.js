@@ -22,7 +22,7 @@ export function startWorldSync() {
   if (supabase && !channel) {
     channel = supabase
       .channel('world-properties')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'properties_toss' }, (payload) => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'toss_properties' }, (payload) => {
         scheduleRefresh();
         detectNearbyTrade(payload);
       })
@@ -58,7 +58,7 @@ async function doSyncViewport() {
   if (!supabase || !lastBounds) return;
   const b = lastBounds;
   const { data, error } = await supabase
-    .from('properties_toss')
+    .from('toss_properties')
     .select('id,kind,name,owner_id,for_sale,list_price,price,income_per_hour,meta,center_lng,center_lat')
     .gte('center_lng', b.getWest()).lte('center_lng', b.getEast())
     .gte('center_lat', b.getSouth()).lte('center_lat', b.getNorth())
@@ -69,7 +69,7 @@ async function doSyncViewport() {
 async function fetchForSale() {
   if (!supabase) return;
   const { data, error } = await supabase
-    .from('properties_toss')
+    .from('toss_properties')
     .select('id,kind,name,owner_id,for_sale,list_price,price,meta')
     .eq('for_sale', true).order('updated_at', { ascending: false }).limit(300);
   if (!error) { forSale = data || []; reindex(); bus.emit(Events.WORLD_UPDATED); }

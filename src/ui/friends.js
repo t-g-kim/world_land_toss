@@ -33,7 +33,7 @@ export function initFriends() {
   // Co-purchase changes (accept/complete/cancel) → refresh the panel + badge.
   if (supabase) {
     supabase.channel('my-social')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'co_purchases_toss' }, () => refresh())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'toss_co_purchases' }, () => refresh())
       .subscribe();
   }
   refresh();

@@ -35,7 +35,7 @@ export const GAME_CONFIG = {
   // Scaled to the property economy (assets cost millions): 400 clicks/day ≈ ₩4M,
   // one ad ≈ ₩0.5M — a meaningful daily bootstrap, but property income still scales past it.
   CLICK: { REWARD: 10_000, DAILY_LIMIT: 400 }, // up to 400 clicks/day → ₩4,000,000/day
-  // 토스 인앱 광고(보상형): 시청 완료 시 보상. 한도/보상은 서버 RPC(watch_toss_ad)와 일치시킬 것.
+  // 토스 인앱 광고(보상형): 시청 완료 시 보상. 한도/보상은 서버 RPC(toss_watch_ad)와 일치시킬 것.
   AD: { REWARD: 500_000, DAILY_LIMIT: 5 },
   TAX_RATE: 0.05,
   PURCHASE_PRICE_INCREASE: 0.10,

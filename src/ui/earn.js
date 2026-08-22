@@ -1,6 +1,6 @@
 /**
  * "돈벌기" 메뉴 — 토스 인앱 광고(보상형).
- * 광고를 끝까지 시청(userEarnedReward)하면 서버 RPC(watch_toss_ad)가 보상을
+ * 광고를 끝까지 시청(userEarnedReward)하면 서버 RPC(toss_watch_ad)가 보상을
  * 지급한다 (일일 한도는 서버가 관리). 광고는 load → show → 다시 load 순서.
  */
 import { claimTossAdReward, getTossAdsWatchedToday } from '../game/game-state.js';
