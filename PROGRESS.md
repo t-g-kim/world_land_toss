@@ -96,7 +96,15 @@
 - **광고 정리(정책 준수)**: 쿠팡 파트너스 건물 광고(`coupang-ads.js`, `coupang-products` 함수) 및 링크형 광고 시스템(`/admin.html`, `admin.js`, ads 테이블) **삭제** — 토스 SDK 외 광고 호출은 IAA 정책 위반. 돈벌기(💵)는 **토스 보상형 광고**(`loadFullScreenAd`/`showFullScreenAd`, `userEarnedReward`에만 보상)로 교체. 서버 RPC `watch_toss_ad`(₩50만/회, 5회/일) — `supabase/setup-toss.sql` **실행 필요**.
 - **위치**: 📍 내 위치가 토스 SDK `getCurrentLocation` 우선, 브라우저 폴백(`src/lib/toss.js`).
 - **게스트 모드**: dev 전용으로 축소(프로덕션은 토스 자동 로그인만).
-- ⚠️ **출시 전 남은 일**: ① 콘솔에서 미니앱 등록(게임, appName=someday) ② Edge Function 배포+시크릿 ③ `setup-toss.sql` 실행 ④ 콘솔에서 보상형 광고 그룹 ID 발급 → `.env` `VITE_TOSS_REWARDED_AD_GROUP_ID` ⑤ 번들 업로드 → QR 테스트 ⑥ districts 86MB CDN 이전(100MB 여유 확보, PMTiles 겸사).
+- **콘솔 진행 (2026-08-22)**: 워크스페이스 "오리의 개발"(82293)의 기존 미니앱 **"건물주"(miniAppId 67347, appName `landmark`, 게임)** 재사용 — config appName을 `landmark`로 변경. 첫 번들 `20260822-1`(deploymentId 01a02826-9eb1-7076-95df-63572fa2e78f, SDK 3.0.5) 업로드·빌드·테스트푸시 완료(isTested).
+  - 테스트 딥링크: `intoss-private://landmark?_deploymentId=01a02826-9eb1-7076-95df-63572fa2e78f&host=appsInTossHost`
+  - 로고 600x600: https://static.toss.im/appsintoss/82293/e129b99c-480c-4e32-b824-733fdd12aa09.png · 가로 썸네일 1932x828: https://static.toss.im/appsintoss/82293/14ed7733-eb89-40eb-acf5-40d76be0689d.png (앱정보 등록 시 재사용)
+- ⚠️ **남은 일**:
+  - ① **Supabase 서버 (로그인 동작에 필수)**: `supabase functions deploy toss-login` + `supabase secrets set TOSS_LOGIN_SECRET=$(openssl rand -hex 32)` + SQL Editor에서 `setup-toss.sql` 실행. 이거 전까지 QR 테스트에서 로그인 실패 화면이 뜸.
+  - ② **게임 등급분류 (앱정보 승인·출시에 필수, 콘솔 웹에서만 가능)**: 게임위 등급분류증명서 PDF 또는 오픈마켓 출시 링크+자체등급분류 정보 필요. 신청 방법: https://toss.im/apps-in-toss/blog/game_rating_classification — 등급 없이는 앱정보 검토가 반려됨(miniapp_create 시도 시 "스토어 링크 또는 게임물 등급분류증명서를 등록해주세요" 오류 확인).
+  - ③ 앱정보(로고·설명·카테고리 게임>시뮬레이션) 등록 — 등급 정보 준비 후 위 이미지 URL로 재시도.
+  - ④ 콘솔에서 보상형 광고 그룹 ID 발급 → `.env` `VITE_TOSS_REWARDED_AD_GROUP_ID` (현재 테스트 ID).
+  - ⑤ districts 86MB CDN 이전(dist 88MB, 100MB 제한 임박).
 
 ---
 
