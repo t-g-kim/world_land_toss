@@ -42,7 +42,7 @@ import { initMarketUI } from './ui/market-ui.js';
 import { maybeShowTutorial } from './ui/tutorial.js';
 import { initNotifications } from './ui/notifications.js';
 import { initFriends } from './ui/friends.js';
-import { applyStaticI18n, getLang, setLang, t } from './lib/i18n.js';
+import { applyStaticI18n, t } from './lib/i18n.js';
 
 // Auth
 import { getSession, showAuthScreen, signOut, signInWithToss } from './ui/auth.js';
@@ -66,7 +66,7 @@ function formatDuration(seconds) {
 async function init() {
   // Localize static HTML (top bar, sidebars, auth).
   applyStaticI18n();
-  document.documentElement.lang = getLang();
+  document.documentElement.lang = 'ko';
 
   // Core UI
   initToast();
@@ -208,7 +208,7 @@ async function startGame(user) {
     });
   });
 
-  // Account (토스 자동 로그인 — 계정 화면에는 닉네임/언어만 노출)
+  // Account (토스 자동 로그인 — 계정 화면에는 닉네임만 노출)
   document.getElementById('btn-account')?.addEventListener('click', () => {
     const isGuest = !user;
     const name = escapeHtml(getState().nickname || (isGuest ? t('acct.guest') : 'Player'));
@@ -219,18 +219,12 @@ async function startGame(user) {
         <p style="margin:0 0 20px; color:#888; font-size:0.85rem;">
           ${isGuest ? t('acct.guestNote') : t('acct.tossNote')}
         </p>
-        <div class="lang-switch" style="margin-bottom:16px;">
-          <button type="button" data-lang="ko" class="${getLang() === 'ko' ? 'on' : ''}">한국어</button>
-          <button type="button" data-lang="en" class="${getLang() === 'en' ? 'on' : ''}">English</button>
-        </div>
         ${isGuest ? '' : `<button id="account-action-btn" style="
           padding:10px 32px; border:none; border-radius:8px;
           background:#ef4444; color:#fff; font-size:1rem; cursor:pointer;
         ">${t('acct.logout')}</button>`}
       </div>
     `);
-    document.querySelectorAll('.lang-switch button').forEach((b) =>
-      b.addEventListener('click', () => setLang(b.dataset.lang)));
     document.getElementById('account-action-btn')?.addEventListener('click', () => signOut());
   });
 }

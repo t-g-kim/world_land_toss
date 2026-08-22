@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase.js';
 import { bus, Events } from '../lib/event-bus.js';
-import { t, getLang, setLang } from '../lib/i18n.js';
+import { t } from '../lib/i18n.js';
 import { getTossUserKey } from '../lib/toss.js';
 
 /** Returns the current session, or null if signed out / Supabase not configured. */
@@ -59,13 +59,7 @@ export function showAuthScreen({ message, error, onGuest } = {}) {
       ${onGuest ? `
         <button id="guest-start" class="guest-btn">${t('auth.guest')}</button>
         <p class="auth-hint">${t('auth.guestHint')}</p>` : ''}
-      <div class="lang-switch">
-        <button type="button" data-lang="ko" class="${getLang() === 'ko' ? 'on' : ''}">한국어</button>
-        <button type="button" data-lang="en" class="${getLang() === 'en' ? 'on' : ''}">English</button>
-      </div>
     </div>
   `;
-  container.querySelectorAll('.lang-switch button').forEach((b) =>
-    b.addEventListener('click', () => setLang(b.dataset.lang)));
   container.querySelector('#guest-start')?.addEventListener('click', () => onGuest?.());
 }

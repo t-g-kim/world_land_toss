@@ -1,15 +1,11 @@
 /**
- * Minimal i18n. `t(key, params)` looks up the current language, falling back to
- * Korean then the key. Language is persisted; switching reloads the app so every
- * rendered string is re-evaluated. Static HTML uses [data-i18n]/[data-i18n-title]/
- * [data-i18n-ph] attributes, applied by applyStaticI18n().
+ * 문자열 사전 (한국어 전용). `t(key, params)`로 조회하고, 정적 HTML은
+ * [data-i18n]/[data-i18n-title]/[data-i18n-ph] 속성을 applyStaticI18n()이 채운다.
  */
-const LS_KEY = 'wl_lang';
 
 const DICT = {
   ko: {
     'app.subtitle': '전 세계 영토를 사고 팔아 부를 쌓으세요',
-    'lang.label': '언어',
 
     // Top-bar button tooltips
     'nav.portfolio': '내 자산', 'nav.leaderboard': '랭킹', 'nav.dashboard': '대시보드',
@@ -76,88 +72,11 @@ const DICT = {
     'auth.guestHint': '게스트는 구경만 — 토스 앱에서 실행하면 자동 로그인됩니다.',
     'auth.error': '로그인에 실패했습니다: ',
   },
-  en: {
-    'app.subtitle': 'Buy and sell land worldwide to build your fortune',
-    'lang.label': 'Language',
-
-    'nav.portfolio': 'My Assets', 'nav.leaderboard': 'Ranking', 'nav.dashboard': 'Dashboard',
-    'nav.missions': 'Goals', 'nav.market': 'Market', 'nav.earn': 'Earn',
-    'nav.friends': 'Friends', 'nav.notif': 'Notifications', 'nav.account': 'Account',
-
-    'side.dashboard': 'Dashboard', 'side.portfolio': 'My Assets', 'side.leaderboard': 'Ranking',
-    'side.market': '🏷️ Market', 'side.missions': '🎯 Goals', 'side.friends': '👥 Friends', 'side.earn': '💵 Earn',
-
-    'nav.searchPh': '🔍 Search a place (city · address · landmark)',
-    'nav.myloc': '📍 My location', 'nav.random': '🎲 Explore',
-    'nav.hint': '🏙️ Pick a city or zoom in further to buy buildings',
-
-    'common.cancel': 'Cancel', 'common.confirm': 'Confirm', 'common.buy': 'Buy', 'common.sell': 'Sell',
-    'common.close': 'Close', 'common.loading': 'Loading…',
-
-    'clicker.income': 'Income/hr', 'clicker.today': 'Today', 'clicker.guest': '🔑 Open in the Toss app to earn money and buy real estate!',
-    'clicker.clicksLeft': '{n}/{max} clicks today', 'clicker.usedUp': "You're out of clicks today! Earn more via ads in the 💵 Earn menu.",
-    'clicker.perClick': '{v}/click', 'clicker.perMin': '+{v}/min (assets)', 'clicker.btnTitle': 'Click to earn!',
-
-    'panel.browsing': '👀 Just browsing',
-    'panel.loginToBuy': '🔑 Open in the Toss app to buy',
-    'panel.buy': 'Buy', 'panel.sellBank': 'Sell (bank)', 'panel.refund': 'refund',
-    'panel.list': '💹 List for sale', 'panel.listed': '💹 Listed for sale', 'panel.unlist': 'Unlist',
-    'panel.coBuy': '👥 Co-buy with friends',
-    'panel.incomePerH': '+{v}/hr income',
-    'panel.notEnough': 'Not enough ({v} more needed)',
-    'panel.othersListing': "💹 Another player's listing",
-    'panel.buyListing': 'Buy this listing', 'panel.locked': '🔒 Owned by another player (not for sale)',
-    'panel.coOwned': '👥 Co-owned · your share {v}%',
-    'panel.coOwnedNote': 'Income is split by share automatically. (Selling co-owned assets is coming soon.)',
-    'panel.needTravel': '📍 {km}km from {here} · you need to travel to buy',
-    'panel.inTransitBuy': '📍 {km}km from {here} · ✈️ in transit — you can buy elsewhere after arriving',
-    'panel.flyDirect': '✈️ Direct', 'panel.flyConnect': '🛫 Connecting', 'panel.train': '🚄 Train',
-    'panel.level.country': 'Country', 'panel.level.province': 'Region', 'panel.level.district': 'District',
-    'panel.level.building': 'Building', 'panel.level.floor': 'Floor', 'panel.level.landmark': '🏆 Landmark',
-
-    'toast.buyOk': 'Purchased! 🎉', 'toast.sellOk': 'Sold!',
-    'toast.welcome': '🎉 {name}, starting with {bal}!',
-    'toast.idle': '💤 You earned +{earned} while away for {dur}!',
-    'toast.guestBrowse': '👀 Just browsing — click anywhere you like! Sign in to buy.',
-
-    'tut.next': 'Next', 'tut.prev': 'Back', 'tut.skip': 'Skip', 'tut.start': 'Start 🚀',
-    'tut.1.t': 'Explore the map', 'tut.1.b': 'Drag to move, scroll to zoom in. Enter a city and buildings rise in 3D. Use the 🎲 Explore & landmark chips up top to teleport.',
-    'tut.2.t': 'Buy buildings', 'tut.2.b': 'Click a building or floor to buy it! But only <b>near your location</b>. To buy far away, travel by ✈️ plane or 🚄 train (costs money & time).',
-    'tut.3.t': 'Make money', 'tut.3.b': '💰 Click (daily cap) and 💵 ads for starter cash. Real estate accrues hourly income — your <b>main source</b>.',
-    'tut.4.t': 'Trade', 'tut.4.b': '<b>💹 List</b> your assets and others can buy them. Browse listings by country/region in the 🏷️ Market.',
-    'tut.5.t': 'Aim high', 'tut.5.b': 'Complete 🎯 goals for rewards, and go for 🏆 landmarks (super expensive!). Someday, you too will own it all 👑',
-
-    'acct.guestNote': 'Guest mode · progress is saved only in this browser',
-    'acct.logout': 'Log out', 'acct.guest': 'Guest',
-    'acct.tossNote': 'Connected via your Toss account',
-    'auth.connecting': 'Connecting with your Toss account…',
-    'auth.tossOnly': 'This game must run inside the Toss app.',
-    'auth.guest': 'Browse as guest',
-    'auth.guestHint': 'Guests can only look — open in the Toss app to sign in automatically.',
-    'auth.error': 'Sign-in failed: ',
-  },
 };
 
-let lang = detect();
-
-function detect() {
-  try {
-    const saved = localStorage.getItem(LS_KEY);
-    if (saved === 'ko' || saved === 'en') return saved;
-  } catch {}
-  return (navigator.language || '').toLowerCase().startsWith('ko') ? 'ko' : 'en';
-}
-
-export function getLang() { return lang; }
-
-export function setLang(l) {
-  if (l !== 'ko' && l !== 'en') return;
-  try { localStorage.setItem(LS_KEY, l); } catch {}
-  location.reload();
-}
-
+// 한국어 전용 (앱인토스 국내 서비스)
 export function t(key, params) {
-  let s = DICT[lang]?.[key] ?? DICT.ko[key] ?? key;
+  let s = DICT.ko[key] ?? key;
   if (params) for (const [k, v] of Object.entries(params)) s = s.replaceAll(`{${k}}`, v);
   return s;
 }
