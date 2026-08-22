@@ -41,7 +41,7 @@ export function initNotifications() {
 
 async function loadRecent() {
   if (!supabase) return;
-  const { data } = await supabase.from('notifications')
+  const { data } = await supabase.from('notifications_toss')
     .select('id,type,message,read,created_at')
     .order('created_at', { ascending: false }).limit(30);
   items = data || [];
@@ -53,7 +53,7 @@ function subscribe() {
   if (!supabase || channel) return;
   channel = supabase.channel('my-notifications')
     .on('postgres_changes',
-      { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${uid}` },
+      { event: 'INSERT', schema: 'public', table: 'notifications_toss', filter: `user_id=eq.${uid}` },
       (payload) => {
         const n = payload.new;
         items.unshift({ id: n.id, type: n.type, message: n.message, read: false, created_at: n.created_at });
@@ -95,7 +95,7 @@ async function markRead() {
   unread = 0;
   updateBadge();
   items = items.map((n) => ({ ...n, read: true }));
-  try { await supabase.rpc('mark_notifications_read'); } catch { /* ignore */ }
+  try { await supabase.rpc('mark_notifications_read_toss'); } catch { /* ignore */ }
 }
 
 function timeAgo(ts) {

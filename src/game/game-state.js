@@ -140,7 +140,7 @@ export async function initGameState(user) {
 // Load authoritative balance + my properties from the server into the cache.
 async function refreshFromServer() {
   if (userId && supabase) {
-    const { data } = await supabase.from('profiles').select('balance,claimed_goals').eq('id', userId).single();
+    const { data } = await supabase.from('profiles_toss').select('balance,claimed_goals').eq('id', userId).single();
     if (data) {
       if (data.balance != null) state.balance = data.balance;
       state.claimedGoals = data.claimed_goals || [];
@@ -195,7 +195,7 @@ export async function setNickname(name) {
   // For logged-in players, the nickname is also their public profile name.
   if (userId) {
     try {
-      await supabase.from('profiles').update({ username: name }).eq('id', userId);
+      await supabase.from('profiles_toss').update({ username: name }).eq('id', userId);
     } catch (e) {
       console.warn('닉네임 저장 실패:', e.message);
     }
@@ -552,7 +552,7 @@ async function save() {
 
   try {
     // Only client prefs — balance/ownership are owned by the marketplace RPCs.
-    const { error } = await supabase.from('profiles').update({ game_state: data }).eq('id', userId);
+    const { error } = await supabase.from('profiles_toss').update({ game_state: data }).eq('id', userId);
     if (error) throw error;
   } catch (e) {
     console.warn('저장 실패:', e.message);
@@ -590,7 +590,7 @@ async function loadState() {
 
   try {
     const { data, error } = await supabase
-      .from('profiles')
+      .from('profiles_toss')
       .select('game_state')
       .eq('id', userId)
       .single();
@@ -603,7 +603,7 @@ async function loadState() {
 
 export async function resetGame() {
   if (userId) {
-    await supabase.from('profiles').update({ game_state: {} }).eq('id', userId);
+    await supabase.from('profiles_toss').update({ game_state: {} }).eq('id', userId);
   } else {
     localStorage.removeItem(SAVE_KEY);
   }
