@@ -100,7 +100,7 @@
   - 테스트 딥링크: `intoss-private://landmark?_deploymentId=01a02826-9eb1-7076-95df-63572fa2e78f&host=appsInTossHost`
   - 로고 600x600: https://static.toss.im/appsintoss/82293/e129b99c-480c-4e32-b824-733fdd12aa09.png · 가로 썸네일 1932x828: https://static.toss.im/appsintoss/82293/14ed7733-eb89-40eb-acf5-40d76be0689d.png (앱정보 등록 시 재사용)
 - ⚠️ **남은 일**:
-  - ① **Supabase 서버 (로그인 동작에 필수)**: `supabase functions deploy toss-login` + `supabase secrets set TOSS_LOGIN_SECRET=$(openssl rand -hex 32)` + SQL Editor에서 `setup-toss.sql` 실행. 이거 전까지 QR 테스트에서 로그인 실패 화면이 뜸.
+  - ① **Supabase 서버 (로그인 동작에 필수)**: SQL Editor에서 `setup-toss.sql` 실행만 하면 됨 — 로그인 교환도 Edge Function 없이 SQL RPC(`toss_login`, §7)로 처리 (CLI 불필요). 시크릿은 `toss_login_secret` 테이블(anon 접근 불가)에 자동 생성.
   - **DB 분리 (2026-08-22)**: 웹 게임(world_land)과 **같은 Supabase 프로젝트**(eikctmmdgosdjlwhkteq)를 공유하되, 테이블·RPC를 전부 `toss_` 접두사로 분리 — `setup-toss.sql` 하나에 전체 스키마(toss_profiles, toss_properties, 친구/공동구매/알림 toss_*, RPC 17개) 포함. 토스 유저(@toss.someday.land)는 웹 profiles에서 제외되도록 `handle_new_user`에 가드 추가, `toss_handle_new_user`가 toss_profiles 생성. 클라이언트는 전부 toss_* 테이블/RPC 호출로 변경.
   - ② **게임 등급분류 (앱정보 승인·출시에 필수, 콘솔 웹에서만 가능)**: 게임위 등급분류증명서 PDF 또는 오픈마켓 출시 링크+자체등급분류 정보 필요. 신청 방법: https://toss.im/apps-in-toss/blog/game_rating_classification — 등급 없이는 앱정보 검토가 반려됨(miniapp_create 시도 시 "스토어 링크 또는 게임물 등급분류증명서를 등록해주세요" 오류 확인).
   - ③ 앱정보(로고·설명·카테고리 게임>시뮬레이션) 등록 — 등급 정보 준비 후 위 이미지 URL로 재시도.

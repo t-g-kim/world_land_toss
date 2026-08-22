@@ -11,7 +11,7 @@ export async function getSession() {
 }
 
 /**
- * 앱인토스 로그인: 토스 게임 사용자 식별키(hash)를 받아 Edge Function에서
+ * 앱인토스 로그인: 토스 게임 사용자 식별키(hash)를 서버 RPC(toss_login)가
  * Supabase 계정으로 교환하고 세션을 연다. 기존 RLS/RPC(auth.uid())는 그대로 동작.
  * 토스 앱 밖이면 null 반환 (dev는 게스트 폴백).
  */
@@ -21,9 +21,7 @@ export async function signInWithToss() {
   const hash = await getTossUserKey();
   if (!hash) return null; // 토스 앱이 아님
 
-  const { data, error } = await supabase.functions.invoke('toss-login', {
-    body: { hash },
-  });
+  const { data, error } = await supabase.rpc('toss_login', { p_hash: hash });
   if (error || !data?.email || !data?.password) {
     throw new Error(error?.message || data?.message || '토스 로그인 교환 실패');
   }

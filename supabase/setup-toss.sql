@@ -595,3 +595,55 @@ begin
     order by c.created_at desc
   ) t);
 end $$;
+
+-- ══ 7. 토스 로그인 (Edge Function 없이 SQL RPC로 처리) ════════
+-- getUserKeyForGame() hash → 결정적 (email, password) 교환 → 클라가
+-- signInWithPassword. 시크릿은 anon이 읽을 수 없는 테이블에 보관.
+create extension if not exists pgcrypto;
+
+create table if not exists toss_login_secret (
+  id int primary key default 1,
+  secret text not null
+);
+insert into toss_login_secret(id, secret)
+  select 1, encode(extensions.gen_random_bytes(32), 'hex')
+  where not exists (select 1 from toss_login_secret where id = 1);
+revoke all on toss_login_secret from anon, authenticated;
+alter table toss_login_secret enable row level security; -- 정책 없음 = RPC 전용
+
+create or replace function toss_login(p_hash text)
+returns jsonb language plpgsql security definer
+set search_path = public, auth, extensions as $$
+declare v_secret text; v_email text; v_password text; v_uid uuid;
+begin
+  if p_hash is null or length(p_hash) < 8 or length(p_hash) > 512 then
+    return jsonb_build_object('message', '잘못된 요청');
+  end if;
+  select secret into v_secret from toss_login_secret where id = 1;
+
+  -- hash → 결정적 자격증명 (같은 토스 유저는 항상 같은 계정)
+  v_email := left(encode(extensions.digest('someday:' || p_hash, 'sha256'), 'hex'), 32) || '@toss.someday.land';
+  v_password := encode(extensions.hmac(p_hash, v_secret, 'sha256'), 'hex');
+
+  select id into v_uid from auth.users where email = v_email;
+  if v_uid is null then
+    v_uid := gen_random_uuid();
+    insert into auth.users (instance_id, id, aud, role, email, encrypted_password,
+                            email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+                            created_at, updated_at)
+    values ('00000000-0000-0000-0000-000000000000', v_uid, 'authenticated', 'authenticated',
+            v_email, extensions.crypt(v_password, extensions.gen_salt('bf')), now(),
+            '{"provider":"email","providers":["email"]}'::jsonb,
+            '{"provider":"toss"}'::jsonb, now(), now());
+    insert into auth.identities (id, user_id, provider_id, identity_data, provider,
+                                 last_sign_in_at, created_at, updated_at)
+    values (gen_random_uuid(), v_uid, v_uid::text,
+            jsonb_build_object('sub', v_uid::text, 'email', v_email), 'email',
+            now(), now(), now());
+    -- toss_profiles 행은 toss_on_auth_user_created 트리거가 생성
+  end if;
+
+  return jsonb_build_object('email', v_email, 'password', v_password);
+end $$;
+
+grant execute on function toss_login(text) to anon, authenticated;
