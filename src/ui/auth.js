@@ -48,7 +48,7 @@ export function showAuthScreen({ message, error, onGuest } = {}) {
   overlay.classList.remove('hidden');
 
   container.innerHTML = `
-    <h1 class="auth-title">someday</h1>
+    <h1 class="auth-title">건물주</h1>
     <p class="auth-subtitle">${t('app.subtitle')}</p>
     <div class="auth-login">
       ${error

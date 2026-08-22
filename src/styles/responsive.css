@@ -66,26 +66,73 @@
 
 /* ── Mobile / small screens ── */
 @media (max-width: 640px) {
-  #top-bar { flex-wrap: wrap; padding: 6px 8px; gap: 6px; }
-  .logo { font-size: 18px; }
-  .top-btn { width: 38px; height: 38px; font-size: 18px; }
-  .balance-display { font-size: 14px; }
-  .travel-status { margin-left: 6px; font-size: 11px; padding: 3px 8px; max-width: 40vw; overflow: hidden; text-overflow: ellipsis; }
+  /* 상단바 2줄 높이 (safe-area 제외 값) — 아래 오프셋들이 공유 */
+  :root { --topbar-h: 92px; }
 
-  /* Sidebars: full-width sheets */
-  .sidebar { width: 100vw !important; max-width: 100vw !important; }
+  /* ── 상단바: 1줄 로고+잔액, 2줄 메뉴 버튼(가로 스크롤) ── */
+  #top-bar {
+    height: auto;
+    min-height: calc(var(--topbar-h) + env(safe-area-inset-top, 0px));
+    flex-wrap: wrap;
+    align-content: flex-start;
+    align-items: center;
+    padding: calc(8px + env(safe-area-inset-top, 0px)) 10px 6px;
+    gap: 4px 8px;
+  }
+  .top-bar-left { order: 1; min-width: 0; }
+  /* 토스 게임 내비게이션 바(우상단 더보기·닫기 캡슐) 자리 확보 */
+  .top-bar-center { order: 2; margin-left: auto; margin-right: 84px; }
+  .top-bar-right {
+    order: 3;
+    flex: 1 0 100%;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .top-bar-right::-webkit-scrollbar { display: none; }
+  .logo { font-size: 17px; }
+  .top-btn { width: 36px; height: 36px; font-size: 17px; flex: 0 0 auto; }
+  .balance-display { font-size: 14px; padding: 4px 12px; }
+  .travel-status { margin-left: 6px; font-size: 11px; padding: 3px 8px; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  /* Place-nav: keep search + chips compact, scroll chips horizontally */
-  .place-nav { top: 58px; width: 96vw; }
-  .place-search input { width: 82vw; }
-  .place-chips { flex-wrap: nowrap; overflow-x: auto; max-width: 96vw; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+  /* ── 상단바 높이만큼 아래 요소들 내리기 ── */
+  .sidebar {
+    top: calc(var(--topbar-h) + env(safe-area-inset-top, 0px)) !important;
+    height: calc(100% - var(--topbar-h) - env(safe-area-inset-top, 0px)) !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+  .notif-panel { top: calc(var(--topbar-h) + env(safe-area-inset-top, 0px) + 4px); }
+
+  /* Place-nav: 검색 + 칩 (칩은 왼쪽부터 가로 스크롤 — center면 왼쪽이 잘림) */
+  .place-nav { top: calc(var(--topbar-h) + env(safe-area-inset-top, 0px) + 8px); width: 96vw; }
+  .place-search input { width: 92vw; max-width: 92vw; }
+  .place-chips {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    max-width: 96vw;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .place-chips::-webkit-scrollbar { display: none; }
   .place-chip { flex: 0 0 auto; }
-  .onboard-hint { top: 116px; font-size: 11px; white-space: normal; max-width: 92vw; text-align: center; }
+  .onboard-hint { top: calc(var(--topbar-h) + env(safe-area-inset-top, 0px) + 96px); font-size: 11px; white-space: normal; max-width: 92vw; text-align: center; }
+
+  /* 줌 레벨 표시: 상단바 아래로 */
+  .zoom-indicator, #zoom-indicator { top: calc(var(--topbar-h) + env(safe-area-inset-top, 0px) + 56px); }
 
   /* Territory/detail panel: bottom sheet */
   #territory-panel.panel { width: 100vw; max-width: 100vw; left: 0; right: 0; bottom: 0; top: auto; max-height: 62vh; border-radius: 16px 16px 0 0; }
 
-  .clicker-wrapper { transform: scale(0.85); transform-origin: bottom right; }
-  .guest-cta { bottom: 14px; font-size: 14px; padding: 11px 20px; }
+  /* 클리커: mapbox 로고·저작권과 안 겹치게 위로 */
+  #clicker-container { bottom: calc(40px + env(safe-area-inset-bottom, 0px)); left: 12px; }
+  .clicker-wrapper { transform: scale(0.85); transform-origin: bottom left; }
+
+  .guest-cta { bottom: calc(14px + env(safe-area-inset-bottom, 0px)); font-size: 14px; padding: 11px 20px; }
   .tut { max-width: 88vw; }
 }
