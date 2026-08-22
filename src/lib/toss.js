@@ -9,12 +9,17 @@ import {
   showFullScreenAd,
   getCurrentLocation,
   Accuracy,
+  TossAds,
 } from '@apps-in-toss/web-framework';
 
 // 개발 단계에서는 테스트 ID 사용이 필수 (실제 ID로 테스트하면 정책 위반).
-// 출시 전 콘솔에서 발급받은 보상형 광고 그룹 ID를 .env에 설정할 것.
+// 출시 전 콘솔에서 발급받은 광고 그룹 ID들을 .env에 설정할 것.
 export const REWARDED_AD_GROUP_ID =
   import.meta.env.VITE_TOSS_REWARDED_AD_GROUP_ID || 'ait-ad-test-rewarded-id';
+export const INTERSTITIAL_AD_GROUP_ID =
+  import.meta.env.VITE_TOSS_INTERSTITIAL_AD_GROUP_ID || 'ait-ad-test-interstitial-id';
+export const BANNER_AD_GROUP_ID =
+  import.meta.env.VITE_TOSS_BANNER_AD_GROUP_ID || 'ait-ad-test-banner-id';
 
 /**
  * 토스 게임 미니앱 사용자 식별키(hash)를 반환. 토스 앱 밖이면 null.
@@ -105,4 +110,89 @@ export async function getTossCurrentLocation() {
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
     );
   });
+}
+
+// ── 전면형 광고 (화면 전환 지점 전용 — load → show → 다시 load) ──
+export function loadInterstitialAd({ onLoaded, onError } = {}) {
+  try {
+    return loadFullScreenAd({
+      options: { adGroupId: INTERSTITIAL_AD_GROUP_ID },
+      onEvent: (event) => { if (event.type === 'loaded') onLoaded?.(); },
+      onError: (err) => onError?.(err),
+    });
+  } catch (e) {
+    onError?.(e);
+    return () => {};
+  }
+}
+
+export function showInterstitialAd({ onClosed, onError } = {}) {
+  try {
+    return showFullScreenAd({
+      options: { adGroupId: INTERSTITIAL_AD_GROUP_ID },
+      onEvent: (event) => {
+        if (event.type === 'dismissed') onClosed?.();
+        if (event.type === 'failedToShow') onError?.(new Error('전면 광고 표시 실패'));
+      },
+      onError: (err) => onError?.(err),
+    });
+  } catch (e) {
+    onError?.(e);
+    return () => {};
+  }
+}
+
+// ── 배너 광고 (TossAds SDK — 초기화 1회 후 슬롯에 부착) ──
+let bannerReady = false;
+let bannerInitStarted = false;
+const pendingBanners = [];
+
+export function isBannerSupported() {
+  try {
+    return Boolean(TossAds?.initialize?.isSupported?.() && TossAds?.attachBanner?.isSupported?.());
+  } catch {
+    return false;
+  }
+}
+
+export function initBannerAds() {
+  if (bannerInitStarted || !isBannerSupported()) return;
+  bannerInitStarted = true;
+  try {
+    TossAds.initialize({
+      callbacks: {
+        onInitialized: () => {
+          bannerReady = true;
+          pendingBanners.splice(0).forEach((fn) => fn());
+        },
+        onInitializationFailed: (e) => console.warn('[toss] 배너 SDK 초기화 실패:', e?.message || e),
+      },
+    });
+  } catch (e) {
+    console.warn('[toss] 배너 SDK 초기화 예외:', e?.message || e);
+  }
+}
+
+/** 배너를 슬롯 엘리먼트에 부착 (초기화 전이면 큐잉). */
+export function attachBannerTo(el) {
+  const doAttach = () => {
+    try {
+      TossAds.attachBanner(BANNER_AD_GROUP_ID, el, {
+        theme: 'dark',      // 앱이 다크 테마 고정
+        variant: 'card',    // 좌우 패딩 + radius — 사이드바에 어울림
+        callbacks: {
+          onNoFill: () => { el.style.display = 'none'; },
+          onAdFailedToRender: (p) => {
+            console.warn('배너 렌더 실패:', p?.error?.message);
+            el.style.display = 'none';
+          },
+        },
+      });
+    } catch (e) {
+      console.warn('배너 부착 실패:', e?.message || e);
+      el.style.display = 'none';
+    }
+  };
+  if (bannerReady) doAttach();
+  else if (bannerInitStarted) pendingBanners.push(doAttach);
 }

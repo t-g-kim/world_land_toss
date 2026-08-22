@@ -37,6 +37,7 @@ import { initClickerUI } from './ui/clicker-ui.js';
 import { initPlaceNav, flyToPlace } from './ui/place-nav.js';
 import { initTravelStatus } from './ui/travel-status.js';
 import { initEarn } from './ui/earn.js';
+import { initAds } from './ui/ads.js';
 import { initMissions } from './ui/missions.js';
 import { initMarketUI } from './ui/market-ui.js';
 import { maybeShowTutorial } from './ui/tutorial.js';
@@ -183,6 +184,9 @@ async function startGame(user) {
 
   // 돈벌기 (rewarded ads) menu
   initEarn();
+
+  // 인앱 광고 (사이드바 배너 + 여행 시 전면형)
+  initAds();
 
   // 목표 / 미션
   initMissions();
