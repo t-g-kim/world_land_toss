@@ -173,11 +173,18 @@ export function initBannerAds() {
   }
 }
 
-/** 배너를 슬롯 엘리먼트에 부착 (초기화 전이면 큐잉). */
+/**
+ * 배너를 슬롯 엘리먼트에 부착 (초기화 전이면 큐잉).
+ * 반환된 핸들의 destroy()로 반드시 제거할 것 — 사이드바가 닫힌 뒤에도
+ * 광고가 남아 레이아웃을 깨는 것을 막는다.
+ */
 export function attachBannerTo(el) {
+  let attached = null;
+  let cancelled = false;
   const doAttach = () => {
+    if (cancelled) return;
     try {
-      TossAds.attachBanner(BANNER_AD_GROUP_ID, el, {
+      attached = TossAds.attachBanner(BANNER_AD_GROUP_ID, el, {
         theme: 'dark',      // 앱이 다크 테마 고정
         variant: 'card',    // 좌우 패딩 + radius — 사이드바에 어울림
         callbacks: {
@@ -195,4 +202,11 @@ export function attachBannerTo(el) {
   };
   if (bannerReady) doAttach();
   else if (bannerInitStarted) pendingBanners.push(doAttach);
+  return {
+    destroy() {
+      cancelled = true;
+      try { attached?.destroy?.(); } catch { /* ignore */ }
+      attached = null;
+    },
+  };
 }

@@ -1,6 +1,8 @@
 /**
  * 인앱 광고 배치 (토스 IAA 정책 준수):
- * - 배너: 스크롤형 사이드바 헤더 아래 1개씩 (동일 화면 1개, 게임 플레이 영역과 분리)
+ * - 배너: 사이드바가 "열릴 때" 헤더 아래에 부착하고 "닫힐 때" 제거 —
+ *   미리 붙여두면 사이드바 슬라이드 애니메이션과 어긋나 광고가 엉뚱한
+ *   위치에 남는 문제가 생긴다. 화면당 1개.
  * - 전면형: 비행기/기차 이동 시작 시(명확한 화면 전환 지점) — 사전 로딩 + 쿨다운
  * 보상형은 돈벌기(earn.js)에서 별도 처리.
  */
@@ -21,17 +23,12 @@ let interstitialLoaded = false;
 let lastInterstitialAt = 0;
 
 export function initAds() {
-  // ── 배너 ──
+  // ── 배너: 사이드바 열림/닫힘에 맞춰 부착/제거 ──
   if (isBannerSupported()) {
     initBannerAds();
     for (const id of BANNER_SIDEBARS) {
       const sidebar = document.getElementById(id);
-      const header = sidebar?.querySelector('.sidebar-header');
-      if (!header) continue;
-      const slot = document.createElement('div');
-      slot.className = 'ad-banner-slot';
-      header.insertAdjacentElement('afterend', slot);
-      attachBannerTo(slot);
+      if (sidebar?.querySelector('.sidebar-header')) watchSidebarBanner(sidebar);
     }
   }
 
@@ -40,6 +37,29 @@ export function initAds() {
     preloadInterstitial();
     bus.on(Events.TRAVEL_STARTED, maybeShowInterstitial);
   }
+}
+
+function watchSidebarBanner(sidebar) {
+  let slot = null;
+  let handle = null;
+
+  const sync = () => {
+    const open = !sidebar.classList.contains('hidden');
+    if (open && !handle) {
+      slot = document.createElement('div');
+      slot.className = 'ad-banner-slot';
+      sidebar.querySelector('.sidebar-header').insertAdjacentElement('afterend', slot);
+      handle = attachBannerTo(slot);
+    } else if (!open && handle) {
+      handle.destroy();
+      handle = null;
+      slot?.remove();
+      slot = null;
+    }
+  };
+
+  new MutationObserver(sync).observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+  sync();
 }
 
 function preloadInterstitial() {
